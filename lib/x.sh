@@ -6,8 +6,7 @@ bt_single_app(){
   # ------------- define  local funcs --------------------    
   app=${PWD##/*/}
   # msg
-  headerprefix="
-  # ------ ${app} --"
+  headerprefix="# ------ ${app} ----"
   # concatenate
   header(){ echo "$headerprefix $1"; } 
 
@@ -225,12 +224,9 @@ bt_all_app(){
 ################### funcs ################################
 
 bt_usage(){ 
-echo "Usage: setup [-a |--all] [info | install | uninstall| reinstall|  setenv | config |pkgmgr ]
-  *  cd ~/[.p|.e]/app/*/; setup action
-  *  cd ~/[.p|.e]; setup -a action
-"
-#exit 1
-return 0 # we want caller to use && return gain
+  echo "usage: e p w"
+  #exit 1
+  return 0 # to use  && on return 
 }
 
 
@@ -290,9 +286,6 @@ bt_to_app_or_root() {
 }
 
 ################### rename symbol in a root dir ################################
-# usage
-# rename_all p old new
-# rename_all w old new
 # rename_all e old new
 bt_rename_all() {
   envroot=$1 
@@ -310,30 +303,6 @@ bt_rename_all() {
   done
 }
 
-################### setup all at  root or under one dir ########################
-#bt_env_app(){
-#  export CENV=$(bt_get_curenv)
-#  if [[ $CENV  == "" ]]; then 
-#    bt_usage  
-#    return
-#  fi
-#
-#  export CENVROOT=$EROOT[$CENV]
-#  export CRC=~/.${CENV}envrc 
-#  
-#  #echo "$CENV $CENVROOT $CRC"
-#  #
-#
-#if [[ "$1" == "-a" ]] || [[ "$1" == "--all" ]]; then 
-#    [[ ! "$PWD" =~ "$CENVROOT"$ ]] && bt_usage && return
-#    shift
-#    bt_all_app $1 $CENVROOT 
-#else
-#    [[ ! "$PWD" =~ "$CENVROOT/app/*/" ]] && bt_usage && return
-#    bt_single_app "$@"
-#fi
-#
-#}
 bt_env_app(){
   export CENV=$(bt_get_curenv)
 
