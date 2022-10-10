@@ -310,7 +310,7 @@ bt_env_app(){
     export CRC=~/.${CENV}envrc 
   fi
 
-  if [[ "$PWD" == "$CENVROOT" ]]; then
+  if ([[ "$PWD" == "$CENVROOT" ]] || [[ "$PWD" == "$CENVROOT/app"  ]]); then
     bt_all_app $1 $CENVROOT 
   elif [[ "$PWD" =~ "$CENVROOT/app/*/" ]]; then
      bt_single_app "$@" 
