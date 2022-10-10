@@ -1,6 +1,0 @@
-#!/usr/bin/env zsh
-source $ENV_X_ROOT/etc/data_env.sh
-source $ENV_X_ROOT/lib/main.sh
-source $ENV_X_ROOT/lib/a.sh
-bt_to_app_or_root $*
-
