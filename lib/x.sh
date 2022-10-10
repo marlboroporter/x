@@ -59,7 +59,6 @@ bt_single_app(){
     elif typeset -f  $defaultfun > /dev/null; then 
       $defaultfun
     else
-      # sh.e variable of same name defined  
       #echo "${!1}" # for bash   
       header $fun
       echo "${(P)fun}" # P indicates to interpret as further paramete 
@@ -79,6 +78,7 @@ bt_single_app(){
   
   # ------------- single setup --------------------    
   bt_setup_one() {
+      echo "root=${CENVROOT}"
       root=${CENVROOT}
       [[ ! "$PWD" =~ "$root/app" ]]  && bt_usage  
       FUNC=${1:-info}
@@ -90,8 +90,6 @@ bt_single_app(){
       fi
       ( 
           cd $DIR  
-          #source ~/.e/lib/single_app.sh  # point to .e only 
-          #[[ -f ./setup.sh ]] && source ./setup.sh 
           zsh_call_check_defined "$FUNC"
       )
   }
@@ -273,8 +271,7 @@ bt_to_app_or_root() {
       fi  
     done
     # to app
-    #echo "found:"
-    #echo "${(kv)apppath}"
+    #echo "found:${(kv)apppath}"
     if [[ -d "$apppath[$eroot]" ]]; then
       #echo "cd $apppath[$eroot]"
       cd $apppath[$eroot]
@@ -316,7 +313,7 @@ bt_env_app(){
   if [[ "$PWD" == "$CENVROOT" ]]; then
     bt_all_app $1 $CENVROOT 
   elif [[ "$PWD" =~ "$CENVROOT/app/*/" ]]; then
-     bt_single_app "$@"
+     bt_single_app "$@" 
   else
     bt_usage
   fi
