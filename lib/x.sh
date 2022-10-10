@@ -81,7 +81,7 @@ bt_single_app(){
   # ------------- single setup --------------------    
   bt_setup_one() {
       root=${CENVROOT}
-      [[ ! "$PWD" =~ "$root/app" ]]  && bt_usage 
+      [[ ! "$PWD" =~ "$root/app" ]]  && bt_usage  
       FUNC=${1:-info}
       # for all individual app
       if [[ "$2" == "" ]]; then
@@ -230,7 +230,7 @@ echo "Usage: setup [-a |--all] [info | install | uninstall| reinstall|  setenv |
   *  cd ~/[.p|.e]; setup -a action
 "
 #exit 1
-return 1
+return 0 # we want caller to use && return gain
 }
 
 
@@ -269,19 +269,19 @@ bt_to_app_or_root() {
           echo "   $d"
         done
       elif [[ $(($count)) -lt 1 ]]; then
-        echo "$k: None" 
+        #echo "$k: None" 
+        :;
       elif [[ $(($count)) -eq 1 ]]; then
-        echo "$k: ${DIRS[@]}" 
+        #echo "$k: ${DIRS[@]}" 
         apppath[$k]=${DIRS[1]} 
       fi  
     done
     # to app
     #echo "found:"
-    echo "${(kv)apppath}"
+    #echo "${(kv)apppath}"
     if [[ -d "$apppath[$eroot]" ]]; then
-      echo "cd $apppath[$eroot]"
+      #echo "cd $apppath[$eroot]"
       cd $apppath[$eroot]
-      pwd
     else
       echo "no matching app in $eroot"
     fi
@@ -311,26 +311,44 @@ bt_rename_all() {
 }
 
 ################### setup all at  root or under one dir ########################
+#bt_env_app(){
+#  export CENV=$(bt_get_curenv)
+#  if [[ $CENV  == "" ]]; then 
+#    bt_usage  
+#    return
+#  fi
+#
+#  export CENVROOT=$EROOT[$CENV]
+#  export CRC=~/.${CENV}envrc 
+#  
+#  #echo "$CENV $CENVROOT $CRC"
+#  #
+#
+#if [[ "$1" == "-a" ]] || [[ "$1" == "--all" ]]; then 
+#    [[ ! "$PWD" =~ "$CENVROOT"$ ]] && bt_usage && return
+#    shift
+#    bt_all_app $1 $CENVROOT 
+#else
+#    [[ ! "$PWD" =~ "$CENVROOT/app/*/" ]] && bt_usage && return
+#    bt_single_app "$@"
+#fi
+#
+#}
 bt_env_app(){
   export CENV=$(bt_get_curenv)
+
   if [[ $CENV  == "" ]]; then 
-    bt_usage  
-    return
+    bt_usage && return
+  else
+    export CENVROOT=$EROOT[$CENV]
+    export CRC=~/.${CENV}envrc 
   fi
 
-  export CENVROOT=$EROOT[$CENV]
-  export CRC=~/.${CENV}envrc 
-  
-  #echo "$CENV $CENVROOT $CRC"
-  #
-
-if [[ "$1" == "-a" ]] || [[ "$1" == "--all" ]]; then 
-    [[ ! "$PWD" =~ "$CENVROOT"$ ]] && bt_usage
-    shift
+  if [[ "$PWD" == "$CENVROOT" ]]; then
     bt_all_app $1 $CENVROOT 
-else
-    [[ ! "$PWD" =~ "$CENVROOT/app/*/" ]] && bt_usage
-    bt_single_app "$@"
-fi
-
+  elif [[ "$PWD" =~ "$CENVROOT/app/*/" ]]; then
+     bt_single_app "$@"
+  else
+    bt_usage
+  fi
 }
