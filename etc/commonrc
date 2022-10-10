@@ -1,0 +1,16 @@
+# path
+export ENV_X_ROOT=~/.x
+export PATH=.:$ENV_X_ROOT/bin:$PATH
+set -o vi
+
+# rc
+[ -f ~/.eenvrc ] && . ~/.eenvrc    
+[ -f ~/.penvrc ] && . ~/.penvrc    
+[ -f ~/.wenvrc ] && . ~/.wenvrc    
+
+# commands
+alias e='env_x_to_app e'
+alias p='env_x_to_app p'
+alias w='env_x_to_app w'
+alias s='env_x_setup'
+
