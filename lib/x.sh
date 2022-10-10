@@ -186,14 +186,18 @@ bt_all_app(){
   # ------------- all main --------------------    
   bt_setup_all(){
     (
+      
+      . ${CENVROOT}/etc/config.sh
       #source ~/.e/lib/all_app.sh
       FUNC=$1
       root=$2 
-      if typeset -f  $FUNC > /dev/null; then
-        $FUNC $root
+      #echo "$FUNC $root"
+
+      if typeset -f  bt_all_$FUNC > /dev/null; then
+        bt_all_$FUNC $root
       else
-        echo " op not supported !"
-        bt_usage
+        echo "OP not predefined for all, try all!"
+        bt_all $root $FUNC
       fi
     )
   }
@@ -201,6 +205,8 @@ bt_all_app(){
 
   # ------------- all main --------------------    
   W_APP_EXE=bt_env_app    
+  #if [[ -z "${apps+x}" ]]; then apps=(x); fi   
+   
   bt_setup_all "$@" 
   #
   # ------------- unset local funcs --------------------    
@@ -244,7 +250,7 @@ bt_get_curenv(){
 bt_to_app_or_root() {
   eroot=$1
   app=$2
-  echo "\$EROOT[$eroot]=$EROOT[$eroot]"
+  #echo "\$EROOT[$eroot]=$EROOT[$eroot]"
   # to root
   if [[ -d $EROOT[$eroot] ]] && [[ "$app" == "" ]];  then
     cd $EROOT[$eroot]
@@ -314,17 +320,16 @@ bt_env_app(){
 
   export CENVROOT=$EROOT[$CENV]
   export CRC=~/.${CENV}envrc 
-#. ${CENVROOT}/etc/config.sh
+  
+  #echo "$CENV $CENVROOT $CRC"
+  #
 
 if [[ "$1" == "-a" ]] || [[ "$1" == "--all" ]]; then 
     [[ ! "$PWD" =~ "$CENVROOT"$ ]] && bt_usage
     shift
-    #source ~/.x/lib/a.sh
-    #bt_setup_all bt_all_$1 $CENVROOT 
-    bt_all_app bt_all_$1 $CENVROOT 
+    bt_all_app $1 $CENVROOT 
 else
     [[ ! "$PWD" =~ "$CENVROOT/app/*/" ]] && bt_usage
-    #bt_setup_one "$@"
     bt_single_app "$@"
 fi
 
