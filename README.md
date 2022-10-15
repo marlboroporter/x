@@ -18,3 +18,5 @@
 
 # goto (e w p)
 
+# .xenvrc
+
