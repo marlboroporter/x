@@ -12,4 +12,6 @@ alias p='bt_to_app_or_root p'
 alias w='bt_to_app_or_root w'
 alias x='cd $ENV_X_ROOT'
 
-
+# 
+export PATH=.:$PATH
+set -o vi
