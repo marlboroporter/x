@@ -78,15 +78,15 @@ bt_single_app(){
   
   # ------------- single setup --------------------    
   bt_setup_one() {
-      echo "root=${CENVROOT}"
+      #echo "root=${CENVROOT}"
       root=${CENVROOT}
-      [[ ! "$PWD" =~ "$root/app" ]]  && bt_usage  
+      [[ ! "$PWD" =~ "$root" ]]  && bt_usage  
       FUNC=${1:-info}
       # for all individual app
       if [[ "$2" == "" ]]; then
           DIR=$PWD
       else
-          DIR=$root/app/$2
+          DIR=$root/$2
       fi
       ( 
           cd $DIR  
@@ -118,83 +118,61 @@ bt_single_app(){
 
 ################################## all ###################################
 bt_all_app(){
-  
   # ------------- define  local funcs --------------------    
-
   bt_init_rc(){
-      echo 'export PATH=~/.e/bin:$PATH'>$CRC
+    #echo 'export PATH=~/..'"$CENV"'/bin:$PATH' > $CRC 
+    echo "# -------------------------- $CENV -------------------------" > $CRC 
   }
 
   bt_all_install(){
       bt_init_rc
-      for x in $apps 
-      do 
-          (cd $1/app/$x; 
-          $W_APP_EXE install           
-          $W_APP_EXE config 
-          $W_APP_EXE setenv 
-          )
-      done
+      bt_all $@  config setenv  
   }
 
-  bt_all_uninstall(){
-      for x in $apps 
-      do 
-          (cd $1/app/$x; $W_APP_EXE uninstall )           
-      done
+  bt_all_uninstall() {
+      bt_all $@   
+      # update installed list ?
   }
 
   bt_all_reinstall(){
-      #init_rc
-      for x in $apps 
-      do 
-          (cd $1/app/$x; 
-          $W_APP_EXE reinstall            
-          $W_APP_EXE config  
-          $W_APP_EXE setenv  
-          )
-      done
+      bt_init_rc
+      bt_all $@ config setenv  
   }
 
   bt_all_setenv(){
       bt_init_rc
-      for x in $apps 
-      do 
-          (cd $1/app/$x; $W_APP_EXE setenv  )
-      done
+      bt_all $@ 
   }
 
-
-  bt_all_init_rc(){
-    bt_init_rc
-    bt_all $*
-
-  }
-
+  # bt_all e f1 f2 ...
   bt_all(){
-      root=$1
-      func=$2
-      for x in $apps 
+      cenv=$1  
+      shift
+      for d in $apps 
       do 
-          (cd $root/app/$x; $W_APP_EXE $func)           
+          (
+          bt_to_app_or_root $cenv $d; 
+          for f in $@
+          do 
+              $W_APP_EXE $f; 
+
+          done
+          )           
       done
   }
 
   # ------------- all main --------------------    
+
   bt_setup_all(){
     (
-      
-      . ${CENVROOT}/etc/config.sh
-      #source ~/.e/lib/all_app.sh
-      FUNC=$1
-      root=$2 
-      #echo "$FUNC $root"
-
+      . ${CENVROOT}/.xenvetc/config.sh
+      cenv=$1
+      FUNC=$2
       if typeset -f  bt_all_$FUNC > /dev/null; then
-        bt_all_$FUNC $root
+        bt_all_$FUNC $@
       else
         echo "OP not predefined for all, try all!"
-        bt_all $root $FUNC
+        bt_all $@ 
       fi
     )
   }
@@ -202,22 +180,17 @@ bt_all_app(){
 
   # ------------- all main --------------------    
   W_APP_EXE=bt_env_app    
-  #if [[ -z "${apps+x}" ]]; then apps=(x); fi   
-   
   bt_setup_all "$@" 
-  #
   # ------------- unset local funcs --------------------    
   unset -f  bt_init_rc
   unset -f  bt_all_install
   unset -f  bt_all_uninstall
   unset -f  bt_all_reinstall
   unset -f  bt_all_setenv
-  unset -f  bt_all_init_rc
   unset -f  bt_all
   unset -f  bt_setup_all
 
 }
-
 
 ################### funcs ################################
 
@@ -254,7 +227,7 @@ bt_to_app_or_root() {
     declare -A apppath 
     for k v in ${(kv)EROOT} 
     do
-      DIRS=($([[ -d $v/app ]] && find $v/app -type d -name $app))
+      DIRS=($([[ -d $v ]] && find $v -type d -name $app))
       count=${#DIRS[@]} 
       #echo "$DIRS[@] : $count"
       if [[ $(($count)) -gt 1 ]]; then
@@ -310,11 +283,20 @@ bt_env_app(){
     export CRC=~/.${CENV}envrc 
   fi
 
-  if ([[ "$PWD" == "$CENVROOT" ]] || [[ "$PWD" == "$CENVROOT/app"  ]]); then
-    bt_all_app $1 $CENVROOT 
-  elif [[ "$PWD" =~ "$CENVROOT/app/*/" ]]; then
+  if ([[ "$PWD" == "$CENVROOT" ]]); then
+    #bt_all_app  $CENVROOT  $1 
+    bt_all_app $CENV $1 
+  elif [[ "$PWD" =~ "$CENVROOT/*/" ]]; then
      bt_single_app "$@" 
   else
     bt_usage
   fi
 }
+
+bt_show_app_and_links(){
+}
+
+bt_parse_readme(){
+  section=" $1"
+}
+
