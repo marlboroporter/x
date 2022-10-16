@@ -1,6 +1,13 @@
 #!/usr/bin/env zsh
 
-source ~/.x/etc/data_env.sh
+source ${XENV_ROOT}/etc/data_env.sh
+
+log(){
+  [[ "${XENV_DEBUG}" = true ]] && echo "$1"  
+}
+
+
+
 
 bt_single_app(){
   # ------------- define  local funcs --------------------    
@@ -148,7 +155,7 @@ bt_all_app(){
   bt_all(){
       cenv=$1  
       shift
-      for d in $apps 
+      for d in $apps  
       do 
           (
           bt_to_app_or_root $cenv $d; 
@@ -219,7 +226,9 @@ bt_to_app_or_root() {
   app=$2
   #echo "\$EROOT[$eroot]=$EROOT[$eroot]"
   # to root
-  if [[ -d $EROOT[$eroot] ]] && [[ "$app" == "" ]];  then
+  if [[  $EROOT[$eroot] == ""  ]]; then
+    echo "$eroot not a configured xenv!"
+  elif [[ "$app" == "" ]]; then
     cd $EROOT[$eroot]
   # to app
   else 
@@ -227,9 +236,10 @@ bt_to_app_or_root() {
     declare -A apppath 
     for k v in ${(kv)EROOT} 
     do
-      DIRS=($([[ -d $v ]] && find $v -type d -name $app))
+      log "$k $v"
+      #DIRS=($([[ -d $v ]] && find $v -type d -name $app)) # not allow even top level link
+      DIRS=($(cd $v; find . -type d -name $app))  # to allow top level link
       count=${#DIRS[@]} 
-      #echo "$DIRS[@] : $count"
       if [[ $(($count)) -gt 1 ]]; then
         echo "$k: $count ducplicates: "
         for d in "${DIRS[@]}"; do
@@ -240,13 +250,13 @@ bt_to_app_or_root() {
         :;
       elif [[ $(($count)) -eq 1 ]]; then
         #echo "$k: ${DIRS[@]}" 
-        apppath[$k]=${DIRS[1]} 
+        apppath[$k]=$v/${DIRS[1]} 
       fi  
     done
     # to app
-    #echo "found:${(kv)apppath}"
+    log "found: ${(kv)apppath}"
     if [[ -d "$apppath[$eroot]" ]]; then
-      #echo "cd $apppath[$eroot]"
+      log "cd $apppath[$eroot]"
       cd $apppath[$eroot]
     else
       echo "no matching app in $eroot"

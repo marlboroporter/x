@@ -1,17 +1,23 @@
 #   
-export ENV_X_ROOT=~/.x
-source $ENV_X_ROOT/lib/x.sh 
+export XENV_ROOT=~/.x
+source $XENV_ROOT/lib/x.sh 
 # rc
 [ -f ~/.eenvrc ] && . ~/.eenvrc    
 [ -f ~/.penvrc ] && . ~/.penvrc    
 [ -f ~/.wenvrc ] && . ~/.wenvrc    
 # commands
+alias x='cd $XENV_ROOT'
 alias a='bt_env_app'
 alias e='bt_to_app_or_root e'
 alias p='bt_to_app_or_root p'
 alias w='bt_to_app_or_root w'
-alias x='cd $ENV_X_ROOT'
+alias b='bt_to_app_or_root b'
+
+
+
 
 # 
 export PATH=.:$PATH
 set -o vi
+export XENV_DEBUG=false 
+#export XENV_DEBUG=true
