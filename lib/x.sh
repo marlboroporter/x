@@ -238,7 +238,15 @@ bt_to_app_or_root() {
     do
       log "$k $v"
       #DIRS=($([[ -d $v ]] && find $v -type d -name $app)) # not allow even top level link
-      DIRS=($(cd $v; find . -type d -name $app))  # to allow top level link
+      DIRS=( 
+            $(
+              if ( [[ -d $v ]]  ||  [[ -L $v ]]  )  
+              then 
+                       cd $v 
+                       find . -type d -name $app
+              fi
+            ) # catch output
+          ) # to array 
       count=${#DIRS[@]} 
       if [[ $(($count)) -gt 1 ]]; then
         echo "$k: $count ducplicates: "
