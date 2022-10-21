@@ -242,8 +242,7 @@ bt_to_app_or_root() {
             $(
               if ( [[ -d $v ]]  ||  [[ -L $v ]]  )  
               then 
-                       cd $v 
-                       find . -type d -name $app
+                       cd "$v";  find . -type d -name $app |grep -v "\.git"
               fi
             ) # catch output
           ) # to array 
