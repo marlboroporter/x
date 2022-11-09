@@ -2,6 +2,7 @@
 
 source ${XENV_ROOT}/etc/data_env.sh
 
+#log "hi"
 log(){
   [[ "${XENV_DEBUG}" = true ]] && echo "$1"  
 }
@@ -62,9 +63,11 @@ bt_single_app(){
     # this check function also avoid invoke base unix command accidently such as install
     if typeset -f  $fun > /dev/null; then 
       header $fun
-      $fun 
+      shift
+      $fun "$@"
     elif typeset -f  $defaultfun > /dev/null; then 
-      $defaultfun
+      shift
+      $defaultfun "$@" 
     else
       #echo "${!1}" # for bash   
       header $fun
