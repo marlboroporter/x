@@ -1,7 +1,7 @@
 export XENV_ROOT=~/.x
 source $XENV_ROOT/lib/x.sh 
 alias x='cd $XENV_ROOT'
-alias a='bt_env_app'
+alias xapp='bt_env_app'
 alias e='bt_to_app_or_root e'
 alias p='bt_to_app_or_root p'
 alias w='bt_to_app_or_root w'
