@@ -11,19 +11,21 @@ log(){
 
 
 bt_single_app(){
-  # ------------- define  local funcs --------------------    
+  # ------------- define  local variable and funcs --------------------    
   app=${PWD##/*/}
+  ## variable to be overrided by child in each xapp dir
+  appdef=""
+  setenv="" 
+  cheatsheet=""
   # msg
-  headerprefix="# ------ ${app} ----"
-  # concatenate
-  header(){ echo "$headerprefix $1"; } 
+  header(){ echo "# ------ $1: ${app} -- ${appdef} "; } 
 
   ## brew
   bresetenv(){
-  # apple m1 differ from intel
-  ! [ -L /usr/local/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
-  export HOMEBREW_NO_INSTALL_CLEANUP=true #  unset to cancel
-  export HOMEBREW_NO_ENV_HINTS=true # unset to concel
+      # apple m1 differ from intel
+      ! [ -L /usr/local/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+      export HOMEBREW_NO_INSTALL_CLEANUP=true #  unset to cancel
+      export HOMEBREW_NO_ENV_HINTS=true # unset to concel
   }
   brew_install()  { bresetenv;  brew install $app; }
   brew_uninstall(){ bresetenv;  brew uninstall $app; }
@@ -75,14 +77,10 @@ bt_single_app(){
     fi
   }
 
-  ## variable to be overrided by child
-  setenv="" 
-  cheatsheet=""
   ##
   setenv(){
-    echo "$headerprefix">>$CRC; 
+    header $1 >>$CRC 
     echo "$setenv">>$CRC; 
-    #echo "appended to $CRC:  $setenv";  
     eval "$setenv";  
   }
   
