@@ -12,6 +12,7 @@ alias e='bt_to_app_or_root e'
 alias p='bt_to_app_or_root p'
 alias w='bt_to_app_or_root w'
 alias b='bt_to_app_or_root b'
+alias r='bt_to_app_or_root r'
 
 
 
