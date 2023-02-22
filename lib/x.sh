@@ -80,8 +80,10 @@ bt_single_app(){
   ##
   setenv(){
     header $1 >>$CRC 
-    echo "$setenv">>$CRC; 
-    eval "$setenv";  
+    default_setenv="export PATH=$PWD/bin:\$PATH;"
+    combo_setenv="$default_setenv$setenv"
+    echo "$combo_setenv">>$CRC
+    eval "$combo_setenv";  
   }
   
   # ------------- single setup --------------------    
