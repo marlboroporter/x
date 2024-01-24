@@ -5,14 +5,17 @@ source $XENV_ROOT/lib/x.sh
 [ -f ~/.eenvrc ] && . ~/.eenvrc    
 [ -f ~/.penvrc ] && . ~/.penvrc    
 [ -f ~/.wenvrc ] && . ~/.wenvrc    
+
 # commands
 alias x='cd $XENV_ROOT'
 alias xapp='bt_env_app'
 alias e='bt_to_app_or_root e'
 alias p='bt_to_app_or_root p'
 alias w='bt_to_app_or_root w'
+## no rc, only use dir access utils
 alias b='bt_to_app_or_root b'
 alias r='bt_to_app_or_root r'
+alias c='bt_to_app_or_root c'
 
 
 
