@@ -47,7 +47,8 @@ bt_single_app(){
   noop_uninstall(){ echo "no op!"; }
 
   #default but overridden by app by reassign pkgmgr 
-  pkgmgr=${WPKGMGR:-noop}
+  #pkgmgr=${WPKGMGR:-noop}
+  pkgmgr=${WPKGMGR:-brew}
 
   bash_call_check_defined(){
     fun=$1
@@ -245,7 +246,7 @@ bt_to_app_or_root() {
             $(
               if ( [[ -d $v ]]  ||  [[ -L $v ]]  )  
               then 
-                       cd "$v";  find . -type d -name $app |grep -v "\.git"
+                       cd "$v";  find . -type d -iname $app |grep -v "\.git"
               fi
             ) # catch output
           ) # to array 

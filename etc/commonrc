@@ -14,14 +14,12 @@ alias p='bt_to_app_or_root p'
 alias w='bt_to_app_or_root w'
 ## no rc, only use dir access utils
 alias b='bt_to_app_or_root b'
-alias r='bt_to_app_or_root r'
-alias c='bt_to_app_or_root c'
 
 
 
 
 # 
-export PATH=.:$PATH
+export PATH=$PATH:.
 set -o vi
 export XENV_DEBUG=false 
 #export XENV_DEBUG=true
