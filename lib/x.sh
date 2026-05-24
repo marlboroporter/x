@@ -240,13 +240,16 @@ bt_to_app_or_root() {
     declare -A apppath 
     for k v in ${(kv)EROOT} 
     do
+      #echo "searching $app in $k: $v"
       log "$k $v"
-      #DIRS=($([[ -d $v ]] && find $v -type d -name $app)) # not allow even top level link
       DIRS=( 
             $(
               if ( [[ -d $v ]]  ||  [[ -L $v ]]  )  
               then 
+                       # I: uniqe 1 segment 
                        cd "$v";  find . -type d -iname $app |grep -v "\.git"
+                       # II: uniqe multiple segment but ... 
+                       # cd "$v";  find . |grep  "$app$" |grep -v "\.git" |uniq
               fi
             ) # catch output
           ) # to array 

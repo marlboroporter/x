@@ -1,3 +1,4 @@
+echo "$0 called"
 export XENV_ROOT=~/.x
 source $XENV_ROOT/lib/x.sh 
 alias x='cd $XENV_ROOT'
@@ -9,3 +10,4 @@ alias b='bt_to_app_or_root b'
 # 
 #export PATH=.:$PATH
 #export XENV_DEBUG=false 
+#export XENV_DEBUG=true
